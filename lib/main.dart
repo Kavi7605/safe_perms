@@ -3,39 +3,47 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'config/theme.dart';
 import 'screens/login_screen.dart';
+import 'screens/register_screen.dart';
 import 'screens/dashboard_screen.dart';
+import 'services/auth_service.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Check Session
+  final isLoggedIn = await AuthService().isLoggedIn();
+
   runApp(
     ChangeNotifierProvider(
       create: (context) => AppState(),
-      child: const SafePermsApp(),
+      child: SafePermsApp(initialLocation: isLoggedIn ? '/dashboard' : '/'),
     ),
   );
 }
 
-class AppState extends ChangeNotifier {
-  // Simple state for UI demo
-}
-
-final _router = GoRouter(
-  initialLocation: '/',
-  routes: [
-    GoRoute(path: '/', builder: (context, state) => const LoginScreen()),
-    GoRoute(path: '/dashboard', builder: (context, state) => const DashboardScreen()),
-  ],
-);
+class AppState extends ChangeNotifier {}
 
 class SafePermsApp extends StatelessWidget {
-  const SafePermsApp({super.key});
+  final String initialLocation;
+  const SafePermsApp({super.key, required this.initialLocation});
 
   @override
   Widget build(BuildContext context) {
+    // routerConfig must be rebuilt to accept dynamic initialLocation
+    final router = GoRouter(
+      initialLocation: initialLocation,
+      routes: [
+        GoRoute(path: '/', builder: (context, state) => const LoginScreen()),
+        GoRoute(path: '/register', builder: (context, state) => const RegisterScreen()),
+        GoRoute(path: '/dashboard', builder: (context, state) => const DashboardScreen()),
+      ],
+    );
+
     return MaterialApp.router(
       title: 'SafePerms',
       debugShowCheckedModeBanner: false,
       theme: SafePermsTheme.darkTheme,
-      routerConfig: _router,
+      routerConfig: router,
     );
   }
 }

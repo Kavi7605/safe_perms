@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../config/theme.dart';
+import 'package:go_router/go_router.dart';
+import '../services/auth_service.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -18,9 +20,16 @@ class DashboardScreen extends StatelessWidget {
           ],
         ),
         actions: [
+          // LOGOUT BUTTON IMPLEMENTATION
           IconButton(
-              icon: const Icon(Icons.settings_outlined, color: Colors.white),
-              onPressed: () {}
+            icon: const Icon(Icons.logout, color: SafePermsTheme.dangerRed),
+            tooltip: 'Logout',
+            onPressed: () async {
+              await AuthService().logout();
+              if (context.mounted) {
+                context.go('/'); // Redirect to Login
+              }
+            },
           ),
         ],
       ),
