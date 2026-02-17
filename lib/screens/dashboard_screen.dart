@@ -66,6 +66,11 @@ class DashboardScreen extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        onTap: (index) {
+          if (index == 2) { // Index 2 is "Schedule"
+            context.go('/schedules');
+          }
+        },
         backgroundColor: SafePermsTheme.surfaceLight,
         selectedItemColor: SafePermsTheme.primaryGreen,
         unselectedItemColor: Colors.grey,
