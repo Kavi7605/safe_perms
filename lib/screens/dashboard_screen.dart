@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../config/theme.dart';
-import '../main.dart';  // Import AppState from main.dart
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -10,157 +8,116 @@ class DashboardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('SafePerms'),
-        backgroundColor: SafePermsTheme.primaryGreen,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: Row(
+          children: const [
+            Icon(Icons.security, color: SafePermsTheme.primaryGreen),
+            SizedBox(width: 8),
+            Text('SafePerms', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+          ],
+        ),
+        actions: [
+          IconButton(
+              icon: const Icon(Icons.settings_outlined, color: Colors.white),
+              onPressed: () {}
+          ),
+        ],
       ),
-
-      body: Consumer<AppState>(
-        builder: (context, appState, child) {
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
               children: [
-                // Permission Summary Cards
-                Row(
-                  children: [
-                    Expanded(
-                      child: Card(
-                        color: SafePermsTheme.surfaceLight,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            children: [
-                              Text('Total Apps',
-                                  style: Theme.of(context).textTheme.titleMedium),
-                              const Text('127',
-                                  style: TextStyle(
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold,
-                                    color: SafePermsTheme.primaryGreen,
-                                  )),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Card(
-                        color: SafePermsTheme.surfaceLight,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            children: [
-                              Text('Permissions',
-                                  style: Theme.of(context).textTheme.titleMedium),
-                              Text('${appState.permissionCount}',
-                                  style: const TextStyle(
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold,
-                                    color: SafePermsTheme.primaryGreen,
-                                  )),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 24),
-
-                Text('Quick Actions',
-                    style: Theme.of(context).textTheme.titleLarge),
-                const SizedBox(height: 16),
-
-                Row(
-                  children: [
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        onPressed: () {},
-                        icon: const Icon(Icons.apps),
-                        label: const Text('View Apps'),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        onPressed: () {},
-                        icon: const Icon(Icons.schedule),
-                        label: const Text('Schedules'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: SafePermsTheme.greenDark,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 24),
-
-                // Bottom Navigation Preview
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: SafePermsTheme.surfaceDark,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      _NavItem(icon: Icons.apps, label: 'Apps', active: true),
-                      _NavItem(icon: Icons.security, label: 'Permissions'),
-                      _NavItem(icon: Icons.schedule, label: 'Schedule'),
-                      _NavItem(icon: Icons.history, label: 'History'),
-                    ],
-                  ),
-                ),
+                _buildStatCard(context, '47', 'Total Apps', Colors.white),
+                const SizedBox(width: 16),
+                _buildStatCard(context, '85%', 'Granted', SafePermsTheme.primaryGreen),
               ],
             ),
-          );
-        },
+            const SizedBox(height: 32),
+            Text('Quick Access', style: Theme.of(context).textTheme.titleMedium),
+            const SizedBox(height: 16),
+            GridView.count(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisCount: 2,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
+              childAspectRatio: 1.5,
+              children: [
+                _buildQuickAction(Icons.camera_alt, 'Camera', '12', Colors.teal),
+                _buildQuickAction(Icons.location_on, 'Location', '8', Colors.blue),
+                _buildQuickAction(Icons.mic, 'Microphone', '6', Colors.redAccent),
+                _buildQuickAction(Icons.contacts, 'Contacts', '15', Colors.orange),
+              ],
+            ),
+          ],
+        ),
       ),
-
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: SafePermsTheme.surfaceLight,
+        selectedItemColor: SafePermsTheme.primaryGreen,
+        unselectedItemColor: Colors.grey,
         type: BottomNavigationBarType.fixed,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.apps), label: 'Apps'),
-          BottomNavigationBarItem(icon: Icon(Icons.security), label: 'Permissions'),
+          BottomNavigationBarItem(icon: Icon(Icons.shield_outlined), label: 'Permissions'),
           BottomNavigationBarItem(icon: Icon(Icons.schedule), label: 'Schedule'),
           BottomNavigationBarItem(icon: Icon(Icons.history), label: 'History'),
         ],
-        currentIndex: 0,
-        onTap: (index) {},
       ),
     );
   }
-}
 
-class _NavItem extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final bool active;
+  Widget _buildStatCard(BuildContext context, String value, String label, Color valueColor) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: SafePermsTheme.surfaceLight,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          children: [
+            Text(value, style: Theme.of(context).textTheme.displayMedium?.copyWith(color: valueColor)),
+            const SizedBox(height: 4),
+            Text(label, style: const TextStyle(color: Colors.grey)),
+          ],
+        ),
+      ),
+    );
+  }
 
-  const _NavItem({
-    required this.icon,
-    required this.label,
-    this.active = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon,
-            color: active ? SafePermsTheme.primaryGreen : Colors.grey),
-        Text(label, style: TextStyle(
-          fontSize: 12,
-          color: active ? SafePermsTheme.primaryGreen : Colors.grey,
-          fontWeight: active ? FontWeight.bold : FontWeight.normal,
-        )),
-      ],
+  Widget _buildQuickAction(IconData icon, String label, String count, Color color) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: SafePermsTheme.surfaceLight,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.15),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(icon, color: color, size: 24),
+          ),
+          const SizedBox(width: 12),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(count, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
+              Text(label, style: const TextStyle(color: Colors.grey, fontSize: 12)),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

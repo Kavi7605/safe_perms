@@ -1,17 +1,25 @@
 name: safe_perms
-description: Advanced Android Permission Manager (MAD Lab 3)
+description: Advanced Android Permission Manager
 publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
+  sdk: '>=3.10.0 <4.0.0'
   flutter: ">=3.10.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  provider: ^6.1.2
   cupertino_icons: ^1.0.8
+
+  # Navigation & State (REQUIRED for main.dart)
+  go_router: ^14.2.7
+  provider: ^6.1.2
+
+  # Permissions & Storage
+  permission_handler: ^11.3.1
+  shared_preferences: ^2.3.0
+
 
 dev_dependencies:
   flutter_test:
