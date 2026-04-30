@@ -11,18 +11,13 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
-
-  # Navigation & State (REQUIRED for main.dart)
   go_router: ^14.2.7
   provider: ^6.1.2
-
-  # Permissions & Storage
   permission_handler: ^11.3.1
   shared_preferences: ^2.3.0
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   uuid: ^4.5.2
-
 
 dev_dependencies:
   flutter_test:
@@ -31,3 +26,21 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+
+#dependencies:
+#  flutter:
+#    sdk: flutter
+#  cupertino_icons: ^1.0.8
+#
+#  # Navigation & State (REQUIRED for main.dart)
+#  go_router: ^14.2.7
+#  provider: ^6.1.2
+#
+#  # Permissions & Storage
+#  permission_handler: ^11.3.1
+#  shared_preferences: ^2.3.0
+#  hive: ^2.2.3
+#  hive_flutter: ^1.1.0
+#  uuid: ^4.5.2
+#  device_apps: ^2.2.0

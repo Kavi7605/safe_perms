@@ -7,7 +7,6 @@ import '../services/database_service.dart';
 
 class ScheduleScreen extends StatefulWidget {
   const ScheduleScreen({super.key});
-
   @override
   State<ScheduleScreen> createState() => _ScheduleScreenState();
 }
@@ -145,15 +144,37 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     );
   }
 
-  // DELETE FUNCTION
+  // DELETE FUNCTION WITH CONFIRMATION DIALOG
   void _deleteItem(String key) {
-    _dbService.deleteSchedule(key);
-    _refreshList();
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Schedule Deleted'),
-        backgroundColor: SafePermsTheme.dangerRed,
-        duration: Duration(seconds: 1),
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: const Color(0xFF1E1E1E),
+        title: const Text('Delete Schedule?', style: TextStyle(color: Colors.white)),
+        content: const Text('This action cannot be undone.', style: TextStyle(color: Colors.white70)),
+        actions: [
+          TextButton(
+            child: const Text('Cancel'),
+            onPressed: () => Navigator.pop(ctx),
+          ),
+          TextButton(
+            child: const Text('Delete', style: TextStyle(color: SafePermsTheme.dangerRed)),
+            onPressed: () {
+              // Perform Delete
+              _dbService.deleteSchedule(key);
+              _refreshList();
+              Navigator.pop(ctx); // Close Dialog
+
+              // Show Snackbar
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Schedule Deleted'),
+                  backgroundColor: SafePermsTheme.dangerRed,
+                ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }
@@ -163,10 +184,8 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Permission Schedules'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.go('/dashboard'),
-        ),
+        automaticallyImplyLeading: false, // <--- ADD THIS (Removes Back Arrow)
+        // REMOVED leading: IconButton(...)
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: SafePermsTheme.primaryGreen,

@@ -1,3 +1,4 @@
+rootProject.name = "safe_perms"
 pluginManagement {
     val flutterSdkPath =
         run {
